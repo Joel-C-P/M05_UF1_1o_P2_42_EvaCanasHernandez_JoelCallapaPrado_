@@ -19,7 +19,7 @@ void Draw();
 
 enum USER_INPUTS { NONE, UP, DOWN, RIGHT, LEFT, QUIT };
 Map pacman_map = Map();
-ClaseEnemy enemy1 = ClaseEnemy();
+ClaseEnemy enemy1 = ClaseEnemy({15,20});
 char player_char = 'O';
 int player_x = 1;
 int player_y = 1;
@@ -134,6 +134,7 @@ void Logic()
         {
             win = true;
         }
+        enemy1.Update(&pacman_map);
     }
 }
 

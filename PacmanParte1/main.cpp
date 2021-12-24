@@ -1,7 +1,9 @@
 #include "Map.h"
 #include "ClaseEnemy.h"
+#include "Player.h"
 #include "TimeManager.h"
 #include <vector>
+
 /// <summary>
 /// Sets the needed variables
 /// </summary>
@@ -23,6 +25,7 @@ void Draw();
 enum USER_INPUTS { NONE, UP, DOWN, RIGHT, LEFT, QUIT };
 Map pacman_map = Map();
 std::vector<ClaseEnemy> enemigos;
+Player player = Player(pacman_map.spawn_player);
 
 
 char player_char = 'O';

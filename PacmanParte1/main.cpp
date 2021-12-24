@@ -1,5 +1,6 @@
 #include "Map.h"
 #include "ClaseEnemy.h"
+#include "TimeManager.h"
 /// <summary>
 /// Sets the needed variables
 /// </summary>
@@ -20,6 +21,7 @@ void Draw();
 enum USER_INPUTS { NONE, UP, DOWN, RIGHT, LEFT, QUIT };
 Map pacman_map = Map();
 ClaseEnemy enemy1 = ClaseEnemy(pacman_map.spawn_enemy);
+
 char player_char = 'O';
 int player_x = 1;
 int player_y = 1;
@@ -167,4 +169,8 @@ void Draw()
         ConsoleUtils::Console_SetColor(ConsoleUtils::CONSOLE_COLOR::GREEN);
         std::cout << "Has ganado!" << std::endl;
     }
+    std::cout << "Fotogramas:" << TimeManager::getInstance().frameCount << std::endl;
+    std::cout << "Time:" << TimeManager::getInstance().time << std::endl;
+    std::cout << "DeltaTime:" << TimeManager::getInstance().deltaTime << std::endl;
+    TimeManager::getInstance().NextFrame();
 }

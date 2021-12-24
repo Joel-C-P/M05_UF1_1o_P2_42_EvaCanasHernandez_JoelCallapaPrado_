@@ -8,6 +8,7 @@
 class ClaseEnemy
 {
 private:
+	COORD spawn;
 	COORD position;
 	COORD direction;
 	char character = 'X';
@@ -15,9 +16,10 @@ private:
 	ConsoleUtils::CONSOLE_COLOR background = ConsoleUtils::CONSOLE_COLOR::BLACK;
 	void RandomDirection();
 public:
+	enum ENEMY_STATE {ENEMY_NONE, ENEMY_KILLED, ENEMY_DEAD};
 	ClaseEnemy();
 	ClaseEnemy(COORD _spawn);
 	void Draw();
-	void Update(Map* _map);
+	ENEMY_STATE Update(Map* _map, COORD _player);
 };
 

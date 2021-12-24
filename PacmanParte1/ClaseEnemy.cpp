@@ -24,12 +24,14 @@ void ClaseEnemy::RandomDirection()
 
 ClaseEnemy::ClaseEnemy()
 {
-	position = { 0,0 };
+	spawn = { 0, 0 };
+	position = spawn;
 	direction = { 0, 0 };
 }
 
 ClaseEnemy::ClaseEnemy(COORD _spawn)
 {
+	spawn = _spawn;
 	position = _spawn;
 	direction = { 0,0 };
 }
@@ -41,7 +43,7 @@ void ClaseEnemy::Draw()
 	std::cout << character;
 }
 
-void ClaseEnemy::Update(Map* _map)
+ClaseEnemy::ENEMY_STATE ClaseEnemy::Update(Map* _map, COORD _player)
 {
 	RandomDirection();
 	COORD newPosition = position;
@@ -65,4 +67,10 @@ void ClaseEnemy::Update(Map* _map)
 		break;
 	}
 	position = newPosition;
+	ENEMY_STATE state = ENEMY_STATE::ENEMY_NONE;
+	if (position.X == _player.X && position.Y == _player.Y) {
+		position = spawn;
+		state = ENEMY_STATE::ENEMY_KILLED;
+	}
+	return state;
 }

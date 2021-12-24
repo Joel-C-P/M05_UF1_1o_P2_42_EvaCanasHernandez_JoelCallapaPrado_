@@ -19,7 +19,7 @@ void Draw();
 
 enum USER_INPUTS { NONE, UP, DOWN, RIGHT, LEFT, QUIT };
 Map pacman_map = Map();
-ClaseEnemy enemy1 = ClaseEnemy({1,1});
+ClaseEnemy enemy1 = ClaseEnemy(pacman_map.spawn_enemy);
 char player_char = 'O';
 int player_x = 1;
 int player_y = 1;
@@ -135,7 +135,17 @@ void Logic()
         {
             win = true;
         }
-        enemy1.Update(&pacman_map);
+        ClaseEnemy::ENEMY_STATE enemy1state = enemy1.Update(&pacman_map, { (short)player_x , (short)player_y });
+        switch (enemy1state)
+        {
+        case ClaseEnemy::ENEMY_KILLED:
+            player_points += 50;
+            break;
+        case ClaseEnemy::ENEMY_DEAD:
+            player_x = pacman_map.spawn_player.X;
+            player_y = pacman_map.spawn_player.Y;
+            break;
+        }
     }
 }
 

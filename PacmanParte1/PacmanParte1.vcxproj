@@ -139,10 +139,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ClaseEnemy.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Map.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ClaseEnemy.h" />
     <ClInclude Include="ConsoleUtils.h" />
     <ClInclude Include="Map.h" />
   </ItemGroup>

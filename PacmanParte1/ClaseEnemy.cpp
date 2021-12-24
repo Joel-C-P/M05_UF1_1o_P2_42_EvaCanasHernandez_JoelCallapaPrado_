@@ -1,3 +1,4 @@
+
 #include "ClaseEnemy.h"
 
 void ClaseEnemy::RandomDirection()
@@ -43,6 +44,25 @@ void ClaseEnemy::Draw()
 void ClaseEnemy::Update(Map* _map)
 {
 	RandomDirection();
-	position.X += direction.X;
-	position.Y += direction.Y;
+	COORD newPosition = position;
+	newPosition.X += direction.X;
+	newPosition.Y += direction.Y;
+
+	if (newPosition.X < 0)
+	{
+		newPosition.X = _map->Width - 1;
+	}
+	newPosition.X %= _map->Width;
+	if (newPosition.Y < 0)
+	{
+		newPosition.Y = _map->Height - 1;
+	}
+	newPosition.Y %= _map->Height;
+	switch (_map->GetTile(newPosition.X, newPosition.Y))
+	{
+	case Map::MAP_TILES::MAP_WALL:
+		newPosition = position;
+		break;
+	}
+	position = newPosition;
 }

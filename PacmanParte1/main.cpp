@@ -1,6 +1,7 @@
 #include "Map.h"
 #include "ClaseEnemy.h"
 #include "TimeManager.h"
+#include <vector>
 /// <summary>
 /// Sets the needed variables
 /// </summary>
@@ -14,13 +15,15 @@ void Input();
 /// </summary>
 void Logic();
 /// <summary>
+void Draw();
 /// Draws the screen
 /// </summary>
-void Draw();
+
 
 enum USER_INPUTS { NONE, UP, DOWN, RIGHT, LEFT, QUIT };
 Map pacman_map = Map();
-ClaseEnemy enemy1 = ClaseEnemy(pacman_map.spawn_enemy);
+std::vector<ClaseEnemy> enemigos;
+
 
 char player_char = 'O';
 int player_x = 1;
@@ -47,6 +50,14 @@ void Setup()
     srand(time(NULL));
     player_x = pacman_map.spawn_player.X;
     player_y = pacman_map.spawn_player.Y;
+
+    unsigned short enemyNumber = 0;
+    std::cout << "cuantos enemigos quieres?";
+    std::cin >> enemyNumber;
+    for (size_t i = 0; i < enemyNumber; i++) 
+    {
+        enemigos.push_back(ClaseEnemy(pacman_map.spawn_enemy));
+    }
 }
 
 void Input()
@@ -73,6 +84,8 @@ void Input()
         input = USER_INPUTS::QUIT;
     }
 }
+
+
 
 void Logic()
 {
@@ -118,48 +131,68 @@ void Logic()
         }
         player_y_new %= pacman_map.Height;
 
-        switch (pacman_map.GetTile(player_x_new, player_y_new))
-        {
-        case Map::MAP_TILES::MAP_WALL:
-            player_y_new = player_y;
-            player_x_new = player_x;
-            break;
-        case Map::MAP_TILES::MAP_POINT:
-            pacman_map.points--;
-            player_points++;
-            pacman_map.SetTile(player_x_new, player_y_new, Map::MAP_TILES::MAP_EMPTY);
-            break;
-        }
-
         player_y = player_y_new;
         player_x = player_x_new;
-        if (pacman_map.points <= 0)
-        {
-            win = true;
-        }
-        ClaseEnemy::ENEMY_STATE enemy1state = enemy1.Update(&pacman_map, { (short)player_x , (short)player_y });
-        switch (enemy1state)
-        {
-        case ClaseEnemy::ENEMY_KILLED:
-            player_points += 50;
-            break;
-        case ClaseEnemy::ENEMY_DEAD:
-            player_x = pacman_map.spawn_player.X;
-            player_y = pacman_map.spawn_player.Y;
-            break;
-        }
 
+        for (size_t i = 0; i < enemigos.size(); i++)
+        {
+            ClaseEnemy::ENEMY_STATE enemystate = enemigos[i].Update(&pacman_map, { (short)player_x , (short)player_y });
+            switch (enemystate)
+            {
+            case ClaseEnemy::ENEMY_KILLED:
+                player_points += 50;
+                break;
+            case ClaseEnemy::ENEMY_DEAD:
+                player_x = pacman_map.spawn_player.X;
+                player_y = pacman_map.spawn_player.Y;
+                break;
+            }
+            switch (pacman_map.GetTile(player_x_new, player_y_new))
+            {
+            case Map::MAP_TILES::MAP_WALL:
+                player_y_new = player_y;
+                player_x_new = player_x;
+                break;
+            case Map::MAP_TILES::MAP_POINT:
+                pacman_map.points--;
+                player_points++;
+                pacman_map.SetTile(player_x_new, player_y_new, Map::MAP_TILES::MAP_EMPTY);
+                break;
+            case Map::MAP_TILES::MAP_POWERUP:
+                player_points += 25;
+                for (size_t i = 0; i < enemigos.size(); i++)
+                {
+                    enemigos[i].PowerUpPicked();
+                }
+                //enemy1.PowerUpPicked();
+                pacman_map.SetTile(player_x_new, player_y_new, Map::MAP_TILES::MAP_EMPTY);
+                break;
+            }
+
+            player_y = player_y_new;
+            player_x = player_x_new;
+
+
+
+            if (pacman_map.points <= 0)
+            {
+                win = true;
+            }
+        }
     }
 }
 
-void Draw()
-{
-    ConsoleUtils::Console_SetPos(0,0);
+void Draw() {
+    ConsoleUtils::Console_SetPos(0, 0);
     pacman_map.Draw();
     ConsoleUtils::Console_SetPos(player_x, player_y);
     ConsoleUtils::Console_SetColor(ConsoleUtils::CONSOLE_COLOR::DARK_YELLOW);
     std::cout << player_char;
-    enemy1.Draw();
+
+    for (size_t i = 0; i < enemigos.size(); i++)
+    {
+        enemigos[i].Draw();
+    }
 
     ConsoleUtils::Console_ClearCharacter({ 0,(short)pacman_map.Height });
     ConsoleUtils::Console_SetColor(ConsoleUtils::CONSOLE_COLOR::CYAN);
@@ -174,3 +207,4 @@ void Draw()
     std::cout << "DeltaTime:" << TimeManager::getInstance().deltaTime << std::endl;
     TimeManager::getInstance().NextFrame();
 }
+    

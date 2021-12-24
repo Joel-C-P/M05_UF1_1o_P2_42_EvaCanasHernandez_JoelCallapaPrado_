@@ -43,6 +43,11 @@ void ClaseEnemy::Draw()
 	std::cout << character;
 }
 
+void ClaseEnemy::PowerUpPicked()
+{
+	powerup_countdown = TimeManager::getInstance().time + powerup_countdown_time;
+}
+
 ClaseEnemy::ENEMY_STATE ClaseEnemy::Update(Map* _map, COORD _player)
 {
 	RandomDirection();
@@ -69,8 +74,19 @@ ClaseEnemy::ENEMY_STATE ClaseEnemy::Update(Map* _map, COORD _player)
 	position = newPosition;
 	ENEMY_STATE state = ENEMY_STATE::ENEMY_NONE;
 	if (position.X == _player.X && position.Y == _player.Y) {
-		position = spawn;
-		state = ENEMY_STATE::ENEMY_KILLED;
+		if (powerup_countdown <= TimeManager::getInstance().time) {
+			state = ENEMY_STATE::ENEMY_DEAD;
+		}
+		else {
+			position = spawn;
+			state = ENEMY_STATE::ENEMY_KILLED;
+		}
+	}
+	if (powerup_countdown <= TimeManager::getInstance().time) {
+		foreground = foreground_attack;
+	}
+	else {
+		foreground = foreground_powerup;
 	}
 	return state;
 }

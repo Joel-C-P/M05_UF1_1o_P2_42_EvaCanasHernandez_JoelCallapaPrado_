@@ -146,6 +146,7 @@ void Logic()
             player_y = pacman_map.spawn_player.Y;
             break;
         }
+
     }
 }
 
